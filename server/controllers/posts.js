@@ -1,5 +1,6 @@
 import Post from '../models/Post.js'
 import User from '../models/User.js'
+import Comment from '../models/Comment.js'
 import path,{dirname} from 'path'
 import { fileURLToPath } from 'url'
 
@@ -90,5 +91,36 @@ export const getMyPosts = async(req, res) => {
         res.json(list) 
     } catch (error) {
         res.json({ message: 'Что-то пошло не так.' })
+    }
+}
+
+export const removePost = async(req, res) => {
+    try {
+       const post = await Post.findByIdAndDelete(req.params.id)
+       if(!post){
+        return res.json({message:'не удается найти этот пост'})
+       }
+       await User.findByIdAndUpdate(req.UserId,{
+        $pull:{posts:req.params.id}
+       })
+        res.json({message:'пост успешно удален'}) 
+    } catch (error) {
+        res.json({ message: 'не удалось удалить пост.' })
+    }
+}
+
+
+export const getPostComments = async(req,res)=>{
+    try{
+        const post = await Post.findById(req.params.id)
+        const list = await Promise.all(
+            post.comments.map((el)=>{
+                return Comment.findById(el)
+            })
+        )
+        res.json(list)
+
+    }catch(err){
+        res.json({message:'не удалось получить все комментарии к этмоу посту'})
     }
 }

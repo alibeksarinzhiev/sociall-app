@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import cors from 'cors' 
 import authRoute from './routes/auth.js'
 import PostRoute from './routes/posts.js'
+import commentRoute from './routes/comment.js'
 import fileUpload from 'express-fileupload';
 
 
@@ -17,6 +18,7 @@ app.use(express.static('uploads'))
 
 app.use('/auth',authRoute)
 app.use('/posts',PostRoute)
+app.use('/comment',commentRoute)
 
 
 
